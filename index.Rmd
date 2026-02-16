@@ -1,6 +1,6 @@
 ---
-title: "PS270 Final Project"
-author: "Your Name Here"
+title: PS270 Final Project
+author: "Mallory Bottemiller"
 description: "My final project"
 output:
   distill::distill_article:
@@ -11,4 +11,4 @@ output:
 
 ## Project thoughts
 
-I am interested in exploring data related to...
+I am interested in exploring data related to zebra muscle infestation in the Midwest. I have personally noticed an increase in this species throughout the past few years and would be curious to see the data related to it.

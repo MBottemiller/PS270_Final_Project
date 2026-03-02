@@ -47,4 +47,8 @@ lake_data <- lake_data |>
   mutate(zm_present = ifelse(is.na(zm_present), 0, 1))
 lake_data
 ```
+```{r}
+lake_data<- lake_data |> select(`Waterbody Name`, LANDING_TYPE_CODE, RAMP_TYPE_CODE, zm_present)
+lake_data
+```
 

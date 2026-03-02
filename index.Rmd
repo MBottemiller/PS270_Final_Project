@@ -11,4 +11,39 @@ output:
 
 ## Project thoughts
 
-How does the presence of Zebra mussels affect the amount of recreation occurring in a fresh water lake? My hypothesis is that the presence of zebra mussels would cause a sharp decline in recreation levels. I believe this because people are less likely to use an environmental space they view as dangerous or degraded. Zebra mussel presence is perceived as dangerous and undesirable because of the damage they can cause to equipment, harm to people, and a decline in fish populations. My explanatory variable in this case is the presence of zebra mussels, which can be measured by population. My outcome variable of interest is the amount of recreation occurring in a given lake, this can be measured by counting annual visitors, fishing licenses, and/or boat launches. My hypothesis would be supported if a negative reltionship was shown between these variables, meaning when there are more zebra mussels there is less recreation. A positive reltionship would disprove this, which would be if a rise in zebra mussels was shown with a rise in recreation.
+Does a lake having public boat access effect the likely hood of a zebra mussel presence, and if it does what type of landing influences more zebra mussel presence? My hypothesis is that lakes with public boat access causes zebra mussel presence. This hypothesis is based on the fact that people are more likely to deteriorate public goods like public lakes, applying this theory people would not care to check their equipment for invasive species before using it in the common good. My outcome variable in this case is the presence of zebra mussels, which can be measured by presence in a lake. My explanatory variable is if a lake has public boat access or not, and if it does what type of landing it has. My hypothesis would be supported if there is a positive relationship between public boat access and zebra mussel presence. A negative relationship would disprove this, which would be if a rise in zebra mussels was shown without public boat access.
+
+```{r}
+library(tidyverse)
+library(readxl)
+```
+```{r}
+Boat_Access<-read_csv("Data/Public_Boat_Access_Sites.csv")
+AIS<-read_csv("Data/WatersWithAIS (1).csv")
+Boat_Access
+AIS
+```
+
+```{r}
+Boat_Access<- Boat_Access %>%
+  rename(`Waterbody Name`= `WATERBODY_NAME_TEXT`)
+```
+```{r}
+Boat_Access$lake_name <- toupper(Boat_Access$`Waterbody Name`)
+AIS$lake_name <- toupper(AIS$`Waterbody Name`)
+
+zebra <- AIS %>%
+  filter("Invasive Species" == "Zebra Mussel")
+
+zebra_presence <- zebra %>%
+  distinct(`Waterbody Name`) %>%
+  mutate(zm_present = 1)
+```
+```{r}
+lake_data <- Boat_Access %>%
+  left_join(zebra_presence, by = "Waterbody Name")
+lake_data <- lake_data %>%
+  mutate(zm_present = ifelse(is.na(zm_present), 0, 1))
+lake_data
+```
+

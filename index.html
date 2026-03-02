@@ -116,7 +116,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/header-attrs-2.17/header-attrs.js","index_files/header-attrs-2.30/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js"]}
+  {"type":"character","attributes":{},"value":["Data/invasive_species","Data/Public_Boat_Access_Sites.csv","Data/WatersWithAIS (1).csv","Data/WatersWithAIS.xls","index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/header-attrs-2.17/header-attrs.js","index_files/header-attrs-2.30/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js","Public_Boat_Access_Sites.csv","WatersWithAIS (1).xls"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
   <!--/radix_placeholder_navigation_in_header-->
@@ -1545,8 +1545,106 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
 <div class="d-article">
 <h2 id="project-thoughts">Project thoughts</h2>
-<p>How does the presence of Zebra mussels affect the amount of recreation occurring in a fresh water lake? My hypothesis is that the presence of zebra mussels would cause a sharp decline in recreation levels. I believe this because people are less likely to use an environmental space they view as dangerous or degraded. Zebra mussel presence is perceived as dangerous and undesirable because of the damage they can cause to equipment, harm to people, and a decline in fish populations. My explanatory variable in this case is the presence of zebra mussels, which can be measured by population. My outcome variable of interest is the amount of recreation occurring in a given lake, this can be measured by counting annual visitors, fishing licenses, and/or boat launches. My hypothesis would be supported if a negative reltionship was shown between these variables, meaning when there are more zebra mussels there is less recreation. A positive reltionship would disprove this, which would be if a rise in zebra mussels was shown with a rise in recreation.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<p>Does a lake having public boat access effect the likely hood of a zebra mussel presence, and if it does what type of landing influences more zebra mussel presence? My hypothesis is that lakes with public boat access causes zebra mussel presence. This hypothesis is based on the fact that people are more likely to deteriorate public goods like public lakes, applying this theory people would not care to check their equipment for invasive species before using it in the common good. My outcome variable in this case is the presence of zebra mussels, which can be measured by presence in a lake. My explanatory variable is if a lake has public boat access or not, and if it does what type of landing it has. My hypothesis would be supported if there is a positive relationship between public boat access and zebra mussel presence. A negative relationship would disprove this, which would be if a rise in zebra mussels was shown without public boat access.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidyverse.tidyverse.org'>tidyverse</a></span><span class='op'>)</span></span>
+<span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://readxl.tidyverse.org'>readxl</a></span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>Boat_Access</span><span class='op'>&lt;-</span><span class='fu'><a href='https://readr.tidyverse.org/reference/read_delim.html'>read_csv</a></span><span class='op'>(</span><span class='st'>"Data/Public_Boat_Access_Sites.csv"</span><span class='op'>)</span></span>
+<span><span class='va'>AIS</span><span class='op'>&lt;-</span><span class='fu'><a href='https://readr.tidyverse.org/reference/read_delim.html'>read_csv</a></span><span class='op'>(</span><span class='st'>"Data/WatersWithAIS (1).csv"</span><span class='op'>)</span></span>
+<span><span class='va'>Boat_Access</span></span></code></pre>
+</div>
+<pre><code># A tibble: 3,143 × 20
+         X       Y OBJECTID BOATLANDING_SEQ_NO LMS_BOAT_LANDING_NAME  
+     &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;              &lt;dbl&gt; &lt;chr&gt;                  
+ 1 657665. 298723.        1                107 Merton Millpond Access 
+ 2 642027. 280573.        2                125 School Section Lake Pu…
+ 3 636472. 268677.        3                  6 Lower Spring Lake Acce…
+ 4 664376. 262728.        4                  7 Tichigan Lake Public A…
+ 5 637918. 253442.        6                 70 Wandawega Lake         
+ 6 654376. 288922.        7                117 Pewaukee Lake Boat Ramp
+ 7 651401. 266723.        8                122 Roxy Pond              
+ 8 669356. 263065.        9                  3 Waubeesee Lake Public …
+ 9 663478. 323146.       10                 79 Ackermans Grove County…
+10 660516. 232408.       11                  9 Powers Lake            
+# ℹ 3,133 more rows
+# ℹ 15 more variables: LANDING_TYPE_CODE &lt;chr&gt;, RAMP_TYPE_CODE &lt;chr&gt;,
+#   ADA_ACCESSIBLE_FEATURE_CODE &lt;chr&gt;, OWNERSHIP_NAME_TEXT &lt;chr&gt;,
+#   OWNERSHIP_MANAGER_NAME_TEXT &lt;chr&gt;,
+#   OWNERSHIP_MANAGER_PHONE_TEXT &lt;chr&gt;, LL_LAT_DD_AMT &lt;dbl&gt;,
+#   LL_LONG_DD_AMT &lt;dbl&gt;, WATERBODY_NAME_TEXT &lt;chr&gt;,
+#   COUNTY_NAME_TEXT &lt;chr&gt;, MUNICIPALITY_NAME_TEXT &lt;chr&gt;, …</code></pre>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>AIS</span></span></code></pre>
+</div>
+<pre><code># A tibble: 4,140 × 3
+   `Waterbody Name`      `Waterbody ID Code (WBIC)` `Invasive Species`
+   &lt;chr&gt;                                      &lt;dbl&gt; &lt;chr&gt;             
+ 1 Adams County (31)                             NA &lt;NA&gt;              
+ 2 Amey Pond                                 176000 Banded Mystery Sn…
+ 3 Arkdale Lake                             1374300 Chinese Mystery S…
+ 4 Big Roche A Cri Creek                    1374100 Rusty Crayfish, Z…
+ 5 Big Roche a Cri                          1374800 Chinese Mystery S…
+ 6 Camelot Lake                             1378100 Banded Mystery Sn…
+ 7 Castle Rock Lake                         1345700 Eurasian Water-Mi…
+ 8 Crooked Lake                              102600 Banded Mystery Sn…
+ 9 Deep Lake                                 102800 Banded Mystery Sn…
+10 Easton Lake                              1343600 Curly-Leaf Pondwe…
+# ℹ 4,130 more rows</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>Boat_Access</span><span class='op'>&lt;-</span> <span class='va'>Boat_Access</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/rename.html'>rename</a></span><span class='op'>(</span>`Waterbody Name`<span class='op'>=</span> <span class='va'>`WATERBODY_NAME_TEXT`</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>Boat_Access</span><span class='op'>$</span><span class='va'>lake_name</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/chartr.html'>toupper</a></span><span class='op'>(</span><span class='va'>Boat_Access</span><span class='op'>$</span><span class='va'>`Waterbody Name`</span><span class='op'>)</span></span>
+<span><span class='va'>AIS</span><span class='op'>$</span><span class='va'>lake_name</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/chartr.html'>toupper</a></span><span class='op'>(</span><span class='va'>AIS</span><span class='op'>$</span><span class='va'>`Waterbody Name`</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>zebra</span> <span class='op'>&lt;-</span> <span class='va'>AIS</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='st'>"Invasive Species"</span> <span class='op'>==</span> <span class='st'>"Zebra Mussel"</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>zebra_presence</span> <span class='op'>&lt;-</span> <span class='va'>zebra</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/distinct.html'>distinct</a></span><span class='op'>(</span><span class='va'>`Waterbody Name`</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>zm_present <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>lake_data</span> <span class='op'>&lt;-</span> <span class='va'>Boat_Access</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate-joins.html'>left_join</a></span><span class='op'>(</span><span class='va'>zebra_presence</span>, by <span class='op'>=</span> <span class='st'>"Waterbody Name"</span><span class='op'>)</span></span>
+<span><span class='va'>lake_data</span> <span class='op'>&lt;-</span> <span class='va'>lake_data</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>zm_present <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>zm_present</span><span class='op'>)</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span></span>
+<span><span class='va'>lake_data</span></span></code></pre>
+</div>
+<pre><code># A tibble: 3,143 × 22
+         X       Y OBJECTID BOATLANDING_SEQ_NO LMS_BOAT_LANDING_NAME  
+     &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;              &lt;dbl&gt; &lt;chr&gt;                  
+ 1 657665. 298723.        1                107 Merton Millpond Access 
+ 2 642027. 280573.        2                125 School Section Lake Pu…
+ 3 636472. 268677.        3                  6 Lower Spring Lake Acce…
+ 4 664376. 262728.        4                  7 Tichigan Lake Public A…
+ 5 637918. 253442.        6                 70 Wandawega Lake         
+ 6 654376. 288922.        7                117 Pewaukee Lake Boat Ramp
+ 7 651401. 266723.        8                122 Roxy Pond              
+ 8 669356. 263065.        9                  3 Waubeesee Lake Public …
+ 9 663478. 323146.       10                 79 Ackermans Grove County…
+10 660516. 232408.       11                  9 Powers Lake            
+# ℹ 3,133 more rows
+# ℹ 17 more variables: LANDING_TYPE_CODE &lt;chr&gt;, RAMP_TYPE_CODE &lt;chr&gt;,
+#   ADA_ACCESSIBLE_FEATURE_CODE &lt;chr&gt;, OWNERSHIP_NAME_TEXT &lt;chr&gt;,
+#   OWNERSHIP_MANAGER_NAME_TEXT &lt;chr&gt;,
+#   OWNERSHIP_MANAGER_PHONE_TEXT &lt;chr&gt;, LL_LAT_DD_AMT &lt;dbl&gt;,
+#   LL_LONG_DD_AMT &lt;dbl&gt;, `Waterbody Name` &lt;chr&gt;,
+#   COUNTY_NAME_TEXT &lt;chr&gt;, MUNICIPALITY_NAME_TEXT &lt;chr&gt;, …</code></pre>
+</div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>

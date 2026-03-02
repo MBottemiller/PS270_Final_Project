@@ -16,6 +16,7 @@ Does a lake having public boat access effect the likely hood of a zebra mussel p
 ```{r}
 library(tidyverse)
 library(readxl)
+library(dplyr)
 ```
 ```{r}
 Boat_Access<-read_csv("Data/Public_Boat_Access_Sites.csv")
@@ -25,24 +26,24 @@ AIS
 ```
 
 ```{r}
-Boat_Access<- Boat_Access %>%
+Boat_Access<- Boat_Access |>
   rename(`Waterbody Name`= `WATERBODY_NAME_TEXT`)
 ```
 ```{r}
 Boat_Access$lake_name <- toupper(Boat_Access$`Waterbody Name`)
 AIS$lake_name <- toupper(AIS$`Waterbody Name`)
 
-zebra <- AIS %>%
+zebra <- AIS |>
   filter("Invasive Species" == "Zebra Mussel")
 
-zebra_presence <- zebra %>%
-  distinct(`Waterbody Name`) %>%
+zebra_presence <- zebra |>
+  distinct(`Waterbody Name`) |>
   mutate(zm_present = 1)
 ```
 ```{r}
-lake_data <- Boat_Access %>%
+lake_data <- Boat_Access |>
   left_join(zebra_presence, by = "Waterbody Name")
-lake_data <- lake_data %>%
+lake_data <- lake_data |>
   mutate(zm_present = ifelse(is.na(zm_present), 0, 1))
 lake_data
 ```

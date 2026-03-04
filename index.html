@@ -1645,7 +1645,27 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 #   LL_LONG_DD_AMT &lt;dbl&gt;, `Waterbody Name` &lt;chr&gt;,
 #   COUNTY_NAME_TEXT &lt;chr&gt;, MUNICIPALITY_NAME_TEXT &lt;chr&gt;, …</code></pre>
 </div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>lake_data</span><span class='op'>&lt;-</span> <span class='va'>lake_data</span> <span class='op'>|&gt;</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='va'>`Waterbody Name`</span>, <span class='va'>LANDING_TYPE_CODE</span>, <span class='va'>RAMP_TYPE_CODE</span>, <span class='va'>zm_present</span><span class='op'>)</span></span>
+<span><span class='va'>lake_data</span></span></code></pre>
+</div>
+<pre><code># A tibble: 3,143 × 4
+   `Waterbody Name`    LANDING_TYPE_CODE RAMP_TYPE_CODE  zm_present
+   &lt;chr&gt;               &lt;chr&gt;             &lt;chr&gt;                &lt;dbl&gt;
+ 1 Merton Millpond     RAMP              Concrete                 0
+ 2 School Section Lake RAMP              Other                    0
+ 3 Lower Spring Lake   RAMP              Concrete                 0
+ 4 Tichigan Lake       RAMP              Concrete Panels          0
+ 5 Wandawega Lake      RAMP              Gravel                   0
+ 6 Pewaukee Lake       RAMP              Concrete Plank           0
+ 7 Roxy Pond           CARRY-IN          Unimproved               0
+ 8 Waubeesee Lake      RAMP              Concrete                 0
+ 9 Little Cedar Lake   RAMP              Concrete Panels          0
+10 Powers Lake         RAMP              Concrete Panels          0
+# ℹ 3,133 more rows</code></pre>
+</div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>

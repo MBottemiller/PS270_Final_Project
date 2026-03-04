@@ -51,4 +51,4 @@ lake_data
 lake_data<- lake_data |> select(`Waterbody Name`, LANDING_TYPE_CODE, RAMP_TYPE_CODE, zm_present)
 lake_data
 ```
-
+## need to put in values that are not containing public landings 

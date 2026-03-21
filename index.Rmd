@@ -11,7 +11,7 @@ output:
 
 ## Project thoughts
 
-Does a lake having public boat access effect the likely hood of a zebra mussel presence, and if it does what type of landing influences more zebra mussel presence? My hypothesis is that lakes with public boat access causes zebra mussel presence. This hypothesis is based on the fact that people are more likely to deteriorate public goods like public lakes, applying this theory people would not care to check their equipment for invasive species before using it in the common good. My outcome variable in this case is the presence of zebra mussels, which can be measured by presence in a lake. My explanatory variable is if a lake has public boat access or not, and if it does what type of landing it has. My hypothesis would be supported if there is a positive relationship between public boat access and zebra mussel presence. A negative relationship would disprove this, which would be if a rise in zebra mussels was shown without public boat access.
+Does a lake having public boat access effect the likely hood of a zebra mussel presence, and if it does what type of landing influences zebra mussel presence? My hypothesis is that lakes with public boat access causes zebra mussel presence. This hypothesis is based on the fact that people are more likely to deteriorate public goods like public lakes, applying this theory people would not care to check their equipment for invasive species before using it in the common good. My outcome variable in this case is the presence of zebra mussels, which can be measured by presence in a lake. My explanatory variable is if a lake has public boat access or not, and if it does what type of landing it has. My hypothesis would be supported if there is a positive relationship between public boat access and zebra mussel presence. A negative relationship would disprove this, which would be if a rise in zebra mussels was shown without public boat access.
 
 ```{r}
 library(tidyverse)
@@ -27,28 +27,67 @@ AIS
 
 ```{r}
 Boat_Access<- Boat_Access |>
-  rename(`Waterbody Name`= `WATERBODY_NAME_TEXT`)
+  rename(Waterbody_Name= WATERBODY_NAME_TEXT)
 ```
 ```{r}
-Boat_Access$lake_name <- toupper(Boat_Access$`Waterbody Name`)
+Boat_Access$lake_name <- toupper(Boat_Access$Waterbody_Name)
 AIS$lake_name <- toupper(AIS$`Waterbody Name`)
 
-zebra <- AIS |>
-  filter("Invasive Species" == "Zebra Mussel")
+AIS <- AIS |>
+  mutate(zebra_present = as.integer(str_detect(`Invasive Species`, "Zebra Mussel")) )
 
-zebra_presence <- zebra |>
-  distinct(`Waterbody Name`) |>
-  mutate(zm_present = 1)
+```
+
+## let's join the data
+
+
+```{r}
+lake_data <- AIS |>
+  left_join(Boat_Access, by = "lake_name", relationship = "many-to-many")
 ```
 ```{r}
-lake_data <- Boat_Access |>
-  left_join(zebra_presence, by = "Waterbody Name")
+lake_data<- lake_data |> select(`Waterbody Name`, LANDING_TYPE_CODE, RAMP_TYPE_CODE, zebra_present)
+lake_data
+```
+
+
+## creating variable to deal with turning missing values into being read as not public  
+
+```{r}
+boat_summary <- Boat_Access |>
+  group_by(lake_name) |>
+  summarize(
+    has_public_access = 1,  
+    any_ramp = as.integer(any(!is.na(RAMP_TYPE_CODE))),
+    any_landing = as.integer(any(!is.na(LANDING_TYPE_CODE)))
+  )
+```
+
+## adding boat_summary data into cleaned data set 
+
+```{r}
+lake_data <- AIS |>
+  left_join(boat_summary, by = "lake_name")
+lake_data <- lake_data
+```
+
+## missing values as 0 then selecting the columns I want 
+
+```{r}
 lake_data <- lake_data |>
-  mutate(zm_present = ifelse(is.na(zm_present), 0, 1))
+  mutate(
+    has_public_access = replace_na(has_public_access, 0),
+    any_ramp = replace_na(any_ramp, 0),
+    any_landing = replace_na(any_landing, 0)
+  )
+lake_data <- lake_data |>
+  select(lake_name, zebra_present, has_public_access, any_ramp, any_landing)
 lake_data
 ```
+
+
+## create graphs to help compare ratio of zm presence in public vs private. if there is a strong correlation appearing look into of lamding and ramp presence has an effect as well 
 ```{r}
-lake_data<- lake_data |> select(`Waterbody Name`, LANDING_TYPE_CODE, RAMP_TYPE_CODE, zm_present)
-lake_data
+
 ```
-## need to put in values that are not containing public landings 
+

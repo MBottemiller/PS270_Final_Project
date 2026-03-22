@@ -93,16 +93,17 @@ lake_data
 lake_data |>
   group_by(has_public_access) |>
   summarise(invasion_rate = mean(zebra_present, na.rm = TRUE)) |>
-  ggplot(lake_data, mapping = aes(x= has_public_access, y = invasion_rate)) +
+  mutate(access = ifelse(has_public_access == 1, "Public", "Private"))|>
+  ggplot(lake_data, mapping = aes(x=access, y = invasion_rate)) +
   geom_col() + 
   labs(
-    x = "Has Public Accesss", 
+    x = "Access", 
     y = "Invasion Rate",
     title = "Zebra Mussel Invasion By Public Boat Access"
   )
 ```
 
-## Correlation is clear so let's look at if landing/ramp types have an effect on invasion rates
+## Correlation is clear so next let's look at if landing/ramp types have an effect on invasion rates
 
 ```{r}
 

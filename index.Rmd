@@ -86,7 +86,24 @@ lake_data
 ```
 
 
-## create graphs to help compare ratio of zm presence in public vs private. if there is a strong correlation appearing look into of lamding and ramp presence has an effect as well 
+## create graphs to help compare ratio of zm presence in public vs private, by creating a variable which shows the invasion rate.
+
+
+```{r}
+lake_data |>
+  group_by(has_public_access) |>
+  summarise(invasion_rate = mean(zebra_present, na.rm = TRUE)) |>
+  ggplot(lake_data, mapping = aes(x= has_public_access, y = invasion_rate)) +
+  geom_col() + 
+  labs(
+    x = "Has Public Accesss", 
+    y = "Invasion Rate",
+    title = "Zebra Mussel Invasion By Public Boat Access"
+  )
+```
+
+## Correlation is clear so let's look at if landing/ramp types have an effect on invasion rates
+
 ```{r}
 
 ```

@@ -116,7 +116,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["Data/invasive_species","Data/Public_Boat_Access_Sites.csv","Data/WatersWithAIS (1).csv","Data/WatersWithAIS.xls","index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/figure-html5/unnamed-chunk-10-1.png","index_files/header-attrs-2.17/header-attrs.js","index_files/header-attrs-2.30/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js","Public_Boat_Access_Sites.csv","WatersWithAIS (1).xls"]}
+  {"type":"character","attributes":{},"value":["Data/invasive_species","Data/Public_Boat_Access_Sites.csv","Data/WatersWithAIS (1).csv","Data/WatersWithAIS.xls","index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/figure-html5/unnamed-chunk-10-1.png","index_files/figure-html5/unnamed-chunk-12-1.png","index_files/figure-html5/unnamed-chunk-13-1.png","index_files/header-attrs-2.17/header-attrs.js","index_files/header-attrs-2.30/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js","Public_Boat_Access_Sites.csv","WatersWithAIS (1).xls"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
   <!--/radix_placeholder_navigation_in_header-->
@@ -1648,8 +1648,23 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <span>    has_public_access <span class='op'>=</span> <span class='fl'>1</span>,  </span>
 <span>    any_ramp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/integer.html'>as.integer</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/any.html'>any</a></span><span class='op'>(</span><span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>RAMP_TYPE_CODE</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>,</span>
 <span>    any_landing <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/integer.html'>as.integer</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/any.html'>any</a></span><span class='op'>(</span><span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>LANDING_TYPE_CODE</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
-<span>  <span class='op'>)</span></span></code></pre>
+<span>  <span class='op'>)</span></span>
+<span><span class='va'>boat_summary</span></span></code></pre>
 </div>
+<pre><code># A tibble: 1,503 × 4
+   lake_name               has_public_access any_ramp any_landing
+   &lt;chr&gt;                               &lt;dbl&gt;    &lt;int&gt;       &lt;int&gt;
+ 1 ADA LAKE                                1        1           1
+ 2 ADAMS LAKE                              1        1           1
+ 3 AHNAPEE RIVER                           1        1           1
+ 4 ALDER CREEK/LAKE POYGAN                 1        1           1
+ 5 ALDER LAKE                              1        1           1
+ 6 ALEXANDER LAKE                          1        1           1
+ 7 ALICE LAKE                              1        1           1
+ 8 ALLEN LAKE                              1        1           1
+ 9 ALLEQUASH LAKE                          1        1           1
+10 ALLEQUASH SPRINGS                       1        1           1
+# ℹ 1,493 more rows</code></pre>
 </div>
 <h2 id="adding-boat_summary-data-into-cleaned-data-set">adding boat_summary data into cleaned data set</h2>
 <div class="layout-chunk" data-layout="l-body">
@@ -1690,25 +1705,89 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <h2 id="create-graphs-to-help-compare-ratio-of-zm-presence-in-public-vs-private-by-creating-a-variable-which-shows-the-invasion-rate.">create graphs to help compare ratio of zm presence in public vs private, by creating a variable which shows the invasion rate.</h2>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>lake_data</span> <span class='op'>|&gt;</span></span>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>Invasion_rate_col</span><span class='op'>&lt;-</span> <span class='va'>lake_data</span> <span class='op'>|&gt;</span></span>
 <span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>has_public_access</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
 <span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarise</a></span><span class='op'>(</span>invasion_rate <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>zebra_present</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
 <span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>access <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span><span class='op'>(</span><span class='va'>has_public_access</span> <span class='op'>==</span> <span class='fl'>1</span>, <span class='st'>"Public"</span>, <span class='st'>"Private"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>|&gt;</span></span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>lake_data</span>, mapping <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='va'>access</span>, y <span class='op'>=</span> <span class='va'>invasion_rate</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='va'>access</span>, y <span class='op'>=</span> <span class='va'>invasion_rate</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_bar.html'>geom_col</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> </span>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span></span>
 <span>    x <span class='op'>=</span> <span class='st'>"Access"</span>, </span>
 <span>    y <span class='op'>=</span> <span class='st'>"Invasion Rate"</span>,</span>
 <span>    title <span class='op'>=</span> <span class='st'>"Zebra Mussel Invasion By Public Boat Access"</span></span>
-<span>  <span class='op'>)</span></span></code></pre>
+<span>  <span class='op'>)</span></span>
+<span><span class='va'>Invasion_rate_col</span></span></code></pre>
 </div>
 <p><img src="index_files/figure-html5/unnamed-chunk-10-1.png" alt="" width="624" /></p>
 </div>
-<h2 id="correlation-is-clear-so-next-lets-look-at-if-landingramp-types-have-an-effect-on-invasion-rates">Correlation is clear so next let’s look at if landing/ramp types have an effect on invasion rates</h2>
+<h2 id="correlation-is-clear-so-next-lets-look-at-if-landingramp-types-have-an-effect-on-invasion-rates-starting-by-making-new-dataset-that-doesnt-exlcude-ramplanding-type">Correlation is clear so next let’s look at if landing/ramp types have an effect on invasion rates, starting by making new dataset that doesnt exlcude ramp/landing type</h2>
 <div class="layout-chunk" data-layout="l-body">
-
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>landing_type_data</span><span class='op'>&lt;-</span> <span class='va'>Boat_Access</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='va'>lake_name</span>, <span class='va'>LANDING_TYPE_CODE</span>, <span class='va'>RAMP_TYPE_CODE</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/distinct.html'>distinct</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span><span class='va'>landing_type_data</span> <span class='op'>&lt;-</span> <span class='va'>landing_type_data</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate-joins.html'>left_join</a></span><span class='op'>(</span></span>
+<span>    <span class='va'>AIS</span> <span class='op'>|&gt;</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='va'>lake_name</span>, <span class='va'>zebra_present</span><span class='op'>)</span>,</span>
+<span>    by <span class='op'>=</span> <span class='st'>"lake_name"</span><span class='op'>)</span></span>
+<span><span class='va'>landing_type_data</span></span></code></pre>
 </div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<pre><code># A tibble: 5,227 × 4
+   lake_name           LANDING_TYPE_CODE RAMP_TYPE_CODE  zebra_present
+   &lt;chr&gt;               &lt;chr&gt;             &lt;chr&gt;                   &lt;int&gt;
+ 1 MERTON MILLPOND     RAMP              Concrete                    0
+ 2 SCHOOL SECTION LAKE RAMP              Other                       1
+ 3 SCHOOL SECTION LAKE RAMP              Other                       0
+ 4 SCHOOL SECTION LAKE RAMP              Other                       0
+ 5 LOWER SPRING LAKE   RAMP              Concrete                   NA
+ 6 TICHIGAN LAKE       RAMP              Concrete Panels             1
+ 7 WANDAWEGA LAKE      RAMP              Gravel                     NA
+ 8 PEWAUKEE LAKE       RAMP              Concrete Plank              1
+ 9 ROXY POND           CARRY-IN          Unimproved                  0
+10 WAUBEESEE LAKE      RAMP              Concrete                    1
+# ℹ 5,217 more rows</code></pre>
+</div>
+<h2 id="create-a-graph-to-look-to-see-relationship-between-ramplanding-types-and-invasion">Create a graph to look to see relationship between ramp/landing types and invasion</h2>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>landing_graph</span><span class='op'>&lt;-</span> <span class='va'>landing_type_data</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>LANDING_TYPE_CODE</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>LANDING_TYPE_CODE</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarise</a></span><span class='op'>(</span></span>
+<span>    invasion_rate <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>zebra_present</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>,</span>
+<span>    n_lakes <span class='op'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/n_distinct.html'>n_distinct</a></span><span class='op'>(</span><span class='va'>lake_name</span><span class='op'>)</span></span>
+<span>  <span class='op'>)</span> </span>
+<span><span class='va'>landing_graph</span><span class='op'>&lt;-</span><span class='va'>landing_graph</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>LANDING_TYPE_CODE</span>, y <span class='op'>=</span> <span class='va'>invasion_rate</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_bar.html'>geom_col</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span> x <span class='op'>=</span> <span class='st'>"Landing Type"</span>,</span>
+<span>    y <span class='op'>=</span> <span class='st'>"Proportion with Zebra Mussels"</span>,</span>
+<span>    title <span class='op'>=</span> <span class='st'>"Zebra Mussel Invasion by Landing Type"</span></span>
+<span>  <span class='op'>)</span></span>
+<span><span class='va'>landing_graph</span></span></code></pre>
+</div>
+<p><img src="index_files/figure-html5/unnamed-chunk-12-1.png" alt="" width="624" /></p>
+</div>
+<h2 id="now-lets-look-at-ramp-type">now lets look at ramp type</h2>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>ramp_graph</span> <span class='op'>&lt;-</span> <span class='va'>landing_type_data</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>RAMP_TYPE_CODE</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>RAMP_TYPE_CODE</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarise</a></span><span class='op'>(</span></span>
+<span>    invasion_rate <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>zebra_present</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>,</span>
+<span>    n_lakes <span class='op'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/n_distinct.html'>n_distinct</a></span><span class='op'>(</span><span class='va'>lake_name</span><span class='op'>)</span><span class='op'>)</span> </span>
+<span></span>
+<span><span class='va'>ramp_graph</span><span class='op'>&lt;-</span><span class='va'>ramp_graph</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>RAMP_TYPE_CODE</span>, y <span class='op'>=</span> <span class='va'>invasion_rate</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_bar.html'>geom_col</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span> x <span class='op'>=</span> <span class='st'>"Ramp Type"</span>,</span>
+<span>    y <span class='op'>=</span> <span class='st'>"Proportion with Zebra Mussels"</span>,</span>
+<span>    title <span class='op'>=</span> <span class='st'>"Zebra Mussel Invasion by Ramp Type"</span></span>
+<span>  <span class='op'>)</span></span>
+<span><span class='va'>ramp_graph</span></span></code></pre>
+</div>
+<p><img src="index_files/figure-html5/unnamed-chunk-13-1.png" alt="" width="624" /></p>
+</div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>

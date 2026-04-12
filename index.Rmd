@@ -61,6 +61,7 @@ boat_summary <- Boat_Access |>
     any_ramp = as.integer(any(!is.na(RAMP_TYPE_CODE))),
     any_landing = as.integer(any(!is.na(LANDING_TYPE_CODE)))
   )
+boat_summary
 ```
 
 ## adding boat_summary data into cleaned data set 
@@ -90,22 +91,71 @@ lake_data
 
 
 ```{r}
-lake_data |>
+Invasion_rate_col<- lake_data |>
   group_by(has_public_access) |>
   summarise(invasion_rate = mean(zebra_present, na.rm = TRUE)) |>
   mutate(access = ifelse(has_public_access == 1, "Public", "Private"))|>
-  ggplot(lake_data, mapping = aes(x=access, y = invasion_rate)) +
+  ggplot(aes(x=access, y = invasion_rate)) +
   geom_col() + 
   labs(
     x = "Access", 
     y = "Invasion Rate",
     title = "Zebra Mussel Invasion By Public Boat Access"
   )
+Invasion_rate_col
 ```
 
-## Correlation is clear so next let's look at if landing/ramp types have an effect on invasion rates
+## Correlation is clear so next let's look at if landing/ramp types have an effect on invasion rates, starting by making new dataset that doesnt exlcude ramp/landing type
 
 ```{r}
+landing_type_data<- Boat_Access |>
+  select(lake_name, LANDING_TYPE_CODE, RAMP_TYPE_CODE) |>
+  distinct()
+landing_type_data <- landing_type_data |>
+  left_join(
+    AIS |> select(lake_name, zebra_present),
+    by = "lake_name")
+landing_type_data
+```
 
+
+
+## Create a graph to look to see relationship between ramp/landing types and invasion 
+
+
+
+```{r}
+landing_graph<- landing_type_data |>
+  filter(!is.na(LANDING_TYPE_CODE)) |>
+  group_by(LANDING_TYPE_CODE) |>
+  summarise(
+    invasion_rate = mean(zebra_present, na.rm = TRUE),
+    n_lakes = n_distinct(lake_name)
+  ) 
+landing_graph<-landing_graph |>
+  ggplot(aes(x = LANDING_TYPE_CODE, y = invasion_rate)) +
+  geom_col() + labs( x = "Landing Type",
+    y = "Proportion with Zebra Mussels",
+    title = "Zebra Mussel Invasion by Landing Type"
+  )
+landing_graph
+```
+## now lets look at ramp type 
+
+```{r}
+ramp_graph <- landing_type_data |>
+  filter(!is.na(RAMP_TYPE_CODE)) |>
+  group_by(RAMP_TYPE_CODE) |>
+  summarise(
+    invasion_rate = mean(zebra_present, na.rm = TRUE),
+    n_lakes = n_distinct(lake_name)) 
+
+ramp_graph<-ramp_graph |>
+  ggplot(aes(x = RAMP_TYPE_CODE, y = invasion_rate)) +
+  geom_col() + labs( x = "Ramp Type",
+    y = "Proportion with Zebra Mussels",
+    title = "Zebra Mussel Invasion by Ramp Type"
+  )
+ramp_graph
 ```
 

@@ -125,37 +125,65 @@ landing_type_data
 
 
 ```{r}
-landing_graph<- landing_type_data |>
+landing_data<- landing_type_data |>
   filter(!is.na(LANDING_TYPE_CODE)) |>
   group_by(LANDING_TYPE_CODE) |>
   summarise(
     invasion_rate = mean(zebra_present, na.rm = TRUE),
-    n_lakes = n_distinct(lake_name)
-  ) 
-landing_graph<-landing_graph |>
+    n_lakes = n_distinct(lake_name))
+
+landing_data |>
   ggplot(aes(x = LANDING_TYPE_CODE, y = invasion_rate)) +
   geom_col() + labs( x = "Landing Type",
     y = "Proportion with Zebra Mussels",
     title = "Zebra Mussel Invasion by Landing Type"
   )
-landing_graph
+landing_data
 ```
 ## now lets look at ramp type 
 
 ```{r}
-ramp_graph <- landing_type_data |>
+ramp_data <- landing_type_data |>
   filter(!is.na(RAMP_TYPE_CODE)) |>
   group_by(RAMP_TYPE_CODE) |>
   summarise(
     invasion_rate = mean(zebra_present, na.rm = TRUE),
     n_lakes = n_distinct(lake_name)) 
 
-ramp_graph<-ramp_graph |>
+
+ramp_data |>
   ggplot(aes(x = RAMP_TYPE_CODE, y = invasion_rate)) +
   geom_col() + labs( x = "Ramp Type",
     y = "Proportion with Zebra Mussels",
     title = "Zebra Mussel Invasion by Ramp Type"
   )
-ramp_graph
+ramp_data
 ```
+
+
+### Milestone 4: Creating a table to look at data then discussing results 
+
+```{r}
+lake_data |>
+  group_by(has_public_access) |>
+  summarise(
+    invasion_rate = mean(zebra_present, na.rm = TRUE)) |>
+  pivot_wider(names_from =has_public_access,values_from= invasion_rate)|>
+  knitr::kable(digits = 3, col.names = c("Private", "Public"))
+```
+
+```{r}
+landing_data |>
+  select(LANDING_TYPE_CODE, invasion_rate) |>
+  pivot_wider(names_from=LANDING_TYPE_CODE, values_from = invasion_rate)|> 
+  knitr::kable(digits = 3, col.names = c("Carry-in", "Ramp", "Ramp", "Unknown"))
+```
+```{r}
+ramp_data|> select(RAMP_TYPE_CODE, invasion_rate) |>
+  pivot_wider(names_from=RAMP_TYPE_CODE, values_from = invasion_rate)|> 
+  knitr::kable(digits = 2)
+```
+
+### Discussion of data 
+After looking at this data visualized it shows that only six percent of private lakes suffer from zebra mussel invasion while 16 percent of public lakes suffer, showing a correlation between public lakes and zebra mussel infestations. Upon looking further into the types of ramps and landings and their effects it can be see that when it comes to landing types the type of landing does not have a significant effect on invasion rates. The ramp types do appear however to correlate with invasion rates as most types stay at a range between 18-26% infested but grated ramps have a higher invasion rate of 42% 
 

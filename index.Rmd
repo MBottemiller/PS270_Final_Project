@@ -11,7 +11,7 @@ output:
 
 ## Project thoughts
 
-Does a lake having public boat access effect the likely hood of a zebra mussel presence, and if it does what type of landing influences zebra mussel presence? My hypothesis is that lakes with public boat access causes zebra mussel presence. This hypothesis is based on the fact that people are more likely to deteriorate public goods like public lakes, applying this theory people would not care to check their equipment for invasive species before using it in the common good. My outcome variable in this case is the presence of zebra mussels, which can be measured by presence in a lake. My explanatory variable is if a lake has public boat access or not, and if it does what type of landing it has. My hypothesis would be supported if there is a positive relationship between public boat access and zebra mussel presence. A negative relationship would disprove this, which would be if a rise in zebra mussels was shown without public boat access.
+Does a lake having public boat access effect the likelyhood of a zebra mussel presence, and if it does what type of landing influences zebra mussel presence? My hypothesis is that lakes with public boat access causes zebra mussel presence. This hypothesis is based on the fact that people are more likely to deteriorate public goods like public lakes, applying this theory people would not care to check their equipment for invasive species before using it in the common good. My outcome variable in this case is the presence of zebra mussels, which can be measured by presence in a lake. My explanatory variable is if a lake has public boat access or not, and if it does what type of landing it has. My hypothesis would be supported if there is a positive relationship between public boat access and zebra mussel presence. A negative relationship would disprove this, which would be if a rise in zebra mussels was shown without public boat access.
 
 ```{r}
 library(tidyverse)
@@ -121,26 +121,25 @@ landing_type_data
 
 
 ## Create a graph to look to see relationship between ramp/landing types and invasion 
-
-
+(dropped groups "Ramp" and "UNKNOWN" as they were just typos in the dataset)
 
 ```{r}
 landing_data<- landing_type_data |>
   filter(!is.na(LANDING_TYPE_CODE)) |>
+  filter(!LANDING_TYPE_CODE %in% c("UNKNOWN", "Ramp"))|>
   group_by(LANDING_TYPE_CODE) |>
-  summarise(
-    invasion_rate = mean(zebra_present, na.rm = TRUE),
-    n_lakes = n_distinct(lake_name))
+  summarise(invasion_rate = mean(zebra_present, na.rm = TRUE), n_lakes = n_distinct(lake_name))
 
 landing_data |>
   ggplot(aes(x = LANDING_TYPE_CODE, y = invasion_rate)) +
   geom_col() + labs( x = "Landing Type",
     y = "Proportion with Zebra Mussels",
-    title = "Zebra Mussel Invasion by Landing Type"
-  )
+    title = "Zebra Mussel Invasion by Landing Type")
 landing_data
 ```
 ## now lets look at ramp type 
+
+find function to make axis label 45 degrees
 
 ```{r}
 ramp_data <- landing_type_data |>
@@ -155,8 +154,8 @@ ramp_data |>
   ggplot(aes(x = RAMP_TYPE_CODE, y = invasion_rate)) +
   geom_col() + labs( x = "Ramp Type",
     y = "Proportion with Zebra Mussels",
-    title = "Zebra Mussel Invasion by Ramp Type"
-  )
+    title = "Zebra Mussel Invasion by Ramp Type") +
+  theme(axis.text.x = element_text(angle = 45, hjust= 1))
 ramp_data
 ```
 
@@ -176,13 +175,16 @@ lake_data |>
 landing_data |>
   select(LANDING_TYPE_CODE, invasion_rate) |>
   pivot_wider(names_from=LANDING_TYPE_CODE, values_from = invasion_rate)|> 
-  knitr::kable(digits = 3, col.names = c("Carry-in", "Ramp", "Ramp", "Unknown"))
+  knitr::kable(digits = 3, col.names = c("Carry-in", "Ramp"))
 ```
 ```{r}
 ramp_data|> select(RAMP_TYPE_CODE, invasion_rate) |>
   pivot_wider(names_from=RAMP_TYPE_CODE, values_from = invasion_rate)|> 
   knitr::kable(digits = 2)
 ```
+ 
+
+
 
 ### Discussion of data 
 After looking at this data visualized it shows that only six percent of private lakes suffer from zebra mussel invasion while 16 percent of public lakes suffer, showing a correlation between public lakes and zebra mussel infestations. Upon looking further into the types of ramps and landings and their effects it can be see that when it comes to landing types the type of landing does not have a significant effect on invasion rates. The ramp types do appear however to correlate with invasion rates as most types stay at a range between 18-26% infested but grated ramps have a higher invasion rate of 42% 

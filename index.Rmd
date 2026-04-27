@@ -9,9 +9,9 @@ output:
 
 
 
-## Project thoughts
+## Introduction
 
-Does a lake having public boat access effect the likelihood of a zebra mussel presence, and if it does what type of landing influences zebra mussel presence? My hypothesis is that lakes with public boat access causes zebra mussel presence. This hypothesis is based on the fact that people are more likely to deteriorate public goods like public lakes, applying this theory people would not care to check their equipment for invasive species before using it in the common good. My outcome variable in this case is the presence of zebra mussels, which can be measured by presence in a lake. My explanatory variable is if a lake has public boat access or not, and if it does what type of landing it has. My hypothesis would be supported if there is a positive relationship between public boat access and zebra mussel presence. A negative relationship would disprove this, which would be if a rise in zebra mussels was shown without public boat access.
+In social science a commonly observed issue is the tragedy of the commons, this occurs when individuals use a shared resource and tend to abuse it to act in their own interest and not that of the community. The tragedy of the commons is especially visible when it comes to environmental resources like lakes, air, and land. For my project I wanted to investigate this problem by looking into an issue I have personally experienced: zebra mussel invasion in lakes. To look into this I wanted to compare invasion rates between lakes without public access and lakes with public access in Wisconsin. In addition to this I was curious to see if the boat landing type had an effect on invasion rates. These questions are important because the answers provide valuable insight into what policy and infrastructure Wisconsin lakes would benefit from to prevent further invasion. It was my hypothesis that lakes with public access would have significantly higher invasion rates, and that the boat landing type would not have a significant impact on invasion rates.  
 
 ```{r, inlcude = FALSE}
 library(tidyverse)
@@ -25,11 +25,11 @@ Boat_Access
 AIS
 ```
 
-```{r}
+```{r, include = FALSE}
 Boat_Access<- Boat_Access |>
   rename(Waterbody_Name= WATERBODY_NAME_TEXT)
 ```
-```{r}
+```{r, include = FALSE}
 Boat_Access$lake_name <- toupper(Boat_Access$Waterbody_Name)
 AIS$lake_name <- toupper(AIS$`Waterbody Name`)
 
@@ -37,9 +37,6 @@ AIS <- AIS |>
   mutate(zebra_present = as.integer(str_detect(`Invasive Species`, "Zebra Mussel")) )
 
 ```
-
-## let's join the data
-
 
 ```{r, include=FALSE}
 lake_data <- AIS |>
@@ -49,9 +46,6 @@ lake_data <- AIS |>
 lake_data<- lake_data |> select(`Waterbody Name`, LANDING_TYPE_CODE, RAMP_TYPE_CODE, zebra_present)
 lake_data
 ```
-
-
-## creating variable to deal with turning missing values into being read as not public  
 
 ```{r,include=FALSE}
 boat_summary <- Boat_Access |>
@@ -64,7 +58,6 @@ boat_summary <- Boat_Access |>
 boat_summary
 ```
 
-## adding boat_summary data into cleaned data set 
 
 ```{r, include= FALSE}
 lake_data <- AIS |>
@@ -72,9 +65,7 @@ lake_data <- AIS |>
 lake_data 
 ```
 
-## missing values as 0 then selecting the columns I want 
-
-```{r}
+```{r, include = FALSE}
 lake_data <- lake_data |>
   mutate(
     has_public_access = replace_na(has_public_access, 0),
@@ -85,7 +76,10 @@ lake_data <- lake_data |>
   select(lake_name, zebra_present, has_public_access, any_ramp, any_landing)
 lake_data
 ```
-## plot to look at dependent variable for question one 
+## Data Section
+
+With this project I used two data sets create research with a cross-sectional design, both were from the Wisconsin Department of Natural Resources. The first data set was a public record that included which lakes have public access and what type of landings or ramps they have. The second data set was a spatial survey that described the types of invasive species found in all Wisconsin lakes. To use these two data sets together I joined them knowing that every Wisconsin lake was present in the invasive species data set, and only lakes with public access were in the other data set. So, knowing this I could created a new column in my data set saying "Public" or "Not Public" based on if it was only present in one or both data sets.
+  My key independent variable was if a lake had public access or not, in the terms of my work this means whether or not a lake had an area where any member of the public could bring in a watercraft.  The dependent variable was then if there is a zebra mussel presence in the lake. The second part of my question was if among publicly accessible lakes if boat landing types had an effect on invasion rates, in this case the independent variable was the type of landing used and the dependent variable was the invasion rate of zebra mussels. My hypothesis would be proven true if there is a positive relationship between public boat access and zebra mussel presence along with no difference between the ramp/landing types and zebra mussel presence. Below a graph of my dependent variable can be seen, showing how many lakes did and did not have zebra mussels. 
 
 ```{r}
 lake_data |>
@@ -100,8 +94,7 @@ lake_data |>
 ```
 
 
-
-## create graphs to help compare ratio of zm presence in public vs private, by creating a variable which shows the invasion rate.
+## Results Section 
 
 
 ```{r}
@@ -118,8 +111,6 @@ Invasion_rate_col<- lake_data |>
   )
 Invasion_rate_col
 
-access_fit<- lm(zebra_present~has_public_access, data= lake_data)
-access_fit
 ```
 
 ## Correlation is clear so next let's look at if landing/ramp types have an effect on invasion rates, starting by making new dataset that doesnt exlcude ramp/landing type

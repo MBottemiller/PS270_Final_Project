@@ -1,7 +1,7 @@
 ---
-title: Zebra Mussel Invasion Rates Realting to Public Access and Landing Types
+title: Zebra Mussel Invasion Rates Realting to Public Access and Landing/Ramp Types
 author: "Mallory Bottemiller"
-description: "My final project"
+description: "A research project based in Wisconsin"
 output:
   distill::distill_article:
     self_contained: false
@@ -13,7 +13,7 @@ output:
 
 In social science a commonly observed issue is the tragedy of the commons, this occurs when individuals use a shared resource and tend to abuse it to act in their own interest and not that of the community. The tragedy of the commons is especially visible when it comes to environmental resources like lakes, air, and land. For my project I wanted to investigate this problem by looking into an issue I have personally experienced: zebra mussel invasion in lakes. To look into this I wanted to compare invasion rates between lakes without public access and lakes with public access in Wisconsin. In addition to this I was curious to see if the boat landing type had an effect on invasion rates. These questions are important because the answers provide valuable insight into what policy and infrastructure Wisconsin lakes would benefit from to prevent further invasion. It was my hypothesis that lakes with public access would have significantly higher invasion rates, and that the boat landing type would not have a significant impact on invasion rates.  
 
-```{r, inlcude = FALSE}
+```{r, include = FALSE}
 library(tidyverse)
 library(readxl)
 library(dplyr)
@@ -79,9 +79,10 @@ lake_data
 ## Data Section
 
 With this project I used two data sets create research with a cross-sectional design, both were from the Wisconsin Department of Natural Resources. The first data set was a public record that included which lakes have public access and what type of landings or ramps they have. The second data set was a spatial survey that described the types of invasive species found in all Wisconsin lakes. To use these two data sets together I joined them knowing that every Wisconsin lake was present in the invasive species data set, and only lakes with public access were in the other data set. So, knowing this I could created a new column in my data set saying "Public" or "Not Public" based on if it was only present in one or both data sets.
+
   My key independent variable was if a lake had public access or not, in the terms of my work this means whether or not a lake had an area where any member of the public could bring in a watercraft.  The dependent variable was then if there is a zebra mussel presence in the lake. The second part of my question was if among publicly accessible lakes if boat landing types had an effect on invasion rates, in this case the independent variable was the type of landing used and the dependent variable was the invasion rate of zebra mussels. My hypothesis would be proven true if there is a positive relationship between public boat access and zebra mussel presence along with no difference between the ramp/landing types and zebra mussel presence. Below a graph of my dependent variable can be seen, showing how many lakes did and did not have zebra mussels. 
 
-```{r}
+```{r, echo = FALSE}
 lake_data |>
   filter(!is.na(zebra_present))|>
   ggplot(aes(x = factor(zebra_present,
@@ -95,13 +96,13 @@ lake_data |>
 
 
 ## Results Section 
+To answer my first question on if access type impacts zebra mussel invasion rates I created a bar plot showing the difference in what percent of each type public vs. not public lakes are infested. Just from the bar plot it can be seen that the ratio of lakes with public access(16%) that are infested is significantly higher than those without public access(6%), but to investigate this results I ran a linear regression model with public access and zebra mussels. The results showed that the main coefficient of public access is 0.101 or 10.1%, meaning that on average lakes with public access have about a 10% higher probability of being infested. Additionally the p-value is very low, making this statistically significant. This result is very significant and shows correlation however at this point I am not ready to say it is causal because of possible confounders.  
 
-
-```{r}
+```{r, echo = FALSE}
 Invasion_rate_col<- lake_data |>
   group_by(has_public_access) |>
   summarise(invasion_rate = mean(zebra_present, na.rm = TRUE)) |>
-  mutate(access = ifelse(has_public_access == 1, "Public", "Private"))|>
+  mutate(access = ifelse(has_public_access == 1, "Public", "Not Public"))|>
   ggplot(aes(x=access, y = invasion_rate)) +
   geom_col() + 
   labs(
@@ -113,8 +114,26 @@ Invasion_rate_col
 
 ```
 
-## Correlation is clear so next let's look at if landing/ramp types have an effect on invasion rates, starting by making new dataset that doesnt exlcude ramp/landing type
+```{r, echo = FALSE}
+lake_data |>
+  group_by(has_public_access) |>
+  summarise(
+    invasion_rate = mean(zebra_present, na.rm = TRUE)) |>
+  pivot_wider(names_from =has_public_access,values_from= invasion_rate)|>
+  knitr::kable(digits = 3, col.names = c("Private", "Public"))
+```
 
+```{r, echo = FALSE}
+library(broom)
+zm_reg <- lm(zebra_present ~ has_public_access, data = lake_data)
+tidy(zm_reg)|>
+   mutate(term = recode(term,
+                       "(Intercept)" = "Private lakes (baseline)",
+                       "has_public_access" = "Has public access")) |>
+  knitr::kable(digits = 3)
+```
+
+After seeing the clear correlation between public boat access and invasion rates I looked into the second question to see if the landing and ramp types also have an effect. In the Bar plot titled "Zebra Mussel invasion by landing type" it can be seen there's barely a difference between ramp(20.1%) and carry-in style(20.9%) access. However then after looking at the invasion rates for different ramp types, as seen in the bar plot titled "Zebra Mussel Invasion by Ramp Type", grated ramps have higher invasion rates than any other type. 42% of grated ramps have zebra mussel infestations, which is more than 10% than any other type.  
 ```{r, include=FALSE}
 landing_type_data<- Boat_Access |>
   select(lake_name, LANDING_TYPE_CODE, RAMP_TYPE_CODE) |>
@@ -127,11 +146,7 @@ landing_type_data
 ```
 
 
-
-## Create a graph to look to see relationship between ramp/landing types and invasion 
-(dropped groups "Ramp" and "UNKNOWN" as they were just typos in the dataset)
-
-```{r}
+```{r, echo = FALSE}
 landing_data<- landing_type_data |>
   filter(!is.na(LANDING_TYPE_CODE)) |>
   filter(!LANDING_TYPE_CODE %in% c("UNKNOWN", "Ramp"))|>
@@ -143,12 +158,11 @@ landing_data |>
   geom_col() + labs( x = "Landing Type",
     y = "Proportion with Zebra Mussels",
     title = "Zebra Mussel Invasion by Landing Type")
-landing_data
 ```
-## now lets look at ramp type 
 
 
-```{r}
+
+```{r, echo = FALSE}
 ramp_data <- landing_type_data |>
   filter(!is.na(RAMP_TYPE_CODE)) |>
   group_by(RAMP_TYPE_CODE) |>
@@ -163,41 +177,25 @@ ramp_data |>
     y = "Proportion with Zebra Mussels",
     title = "Zebra Mussel Invasion by Ramp Type") +
   theme(axis.text.x = element_text(angle = 45, hjust= 1))
-ramp_data
+
 ```
 
 
-### Milestone 4: Creating a table to look at data then discussing results 
 
-```{r}
-lake_data |>
-  group_by(has_public_access) |>
-  summarise(
-    invasion_rate = mean(zebra_present, na.rm = TRUE)) |>
-  pivot_wider(names_from =has_public_access,values_from= invasion_rate)|>
-  knitr::kable(digits = 3, col.names = c("Private", "Public"))
-```
-
-```{r}
+```{r, echo = FALSE}
 landing_data |>
   select(LANDING_TYPE_CODE, invasion_rate) |>
   pivot_wider(names_from=LANDING_TYPE_CODE, values_from = invasion_rate)|> 
   knitr::kable(digits = 3, col.names = c("Carry-in", "Ramp"))
 ```
-```{r}
+```{r, echo = FALSE}
 ramp_data|> select(RAMP_TYPE_CODE, invasion_rate) |>
   pivot_wider(names_from=RAMP_TYPE_CODE, values_from = invasion_rate)|> 
   knitr::kable(digits = 2)
 ```
  
-```{r}
-type_fit<- lm(invasion_rate ~ RAMP_TYPE_CODE , data = ramp_data)
-type_fit
-```
 
-
-
-### Discussion of data 
+## Conclusion 
 After looking at this data visualized it shows that only six percent of private lakes suffer from zebra mussel invasion while 16 percent of public lakes suffer, showing a correlation between public lakes and zebra mussel infestations. Upon looking further into the types of ramps and landings and their effects it can be see that when it comes to landing types the type of landing does not have a significant effect on invasion rates. The ramp types do appear however to correlate with invasion rates as most types stay at a range between 18-26% infested but grated ramps have a higher invasion rate of 42% 
 
 
